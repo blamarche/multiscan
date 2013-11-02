@@ -63,10 +63,23 @@ public class JavaScan {
 		boolean openonly = (args.length > 3);
 
 		if (ip.charAt(ip.length()-1)=='.') {
-			for (int j=1; j<255; j++) {
-				String ips = ip+j;
-				for (int i=0; i<threads; i++)
-					(new Thread(new ScanSeg(ips, ports, i, threads, timeout, openonly))).start();
+			if (ip.split("\\.").length==2)
+			{
+				for (int k=1; k<255; k++) {
+					for (int j=1; j<255; j++) {
+						String ips = ip+k+"."+j;
+						for (int i=0; i<threads; i++)
+							(new Thread(new ScanSeg(ips, ports, i, threads, timeout, openonly))).start();
+					}
+				}
+			}
+			else
+			{			
+				for (int j=1; j<255; j++) {
+					String ips = ip+j;
+					for (int i=0; i<threads; i++)
+						(new Thread(new ScanSeg(ips, ports, i, threads, timeout, openonly))).start();
+				}
 			}
 		}
 		else
