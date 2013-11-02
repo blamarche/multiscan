@@ -68,8 +68,10 @@ public class JavaScan {
 				for (int k=1; k<255; k++) {
 					for (int j=1; j<255; j++) {
 						String ips = ip+k+"."+j;
-						for (int i=0; i<threads; i++)
+						for (int i=0; i<threads; i++) {
+							threadSleep(threads, timeout);
 							(new Thread(new ScanSeg(ips, ports, i, threads, timeout, openonly))).start();
+						}
 					}
 				}
 			}
@@ -77,8 +79,10 @@ public class JavaScan {
 			{			
 				for (int j=1; j<255; j++) {
 					String ips = ip+j;
-					for (int i=0; i<threads; i++)
+					for (int i=0; i<threads; i++) {
+						threadSleep(threads, timeout);
 						(new Thread(new ScanSeg(ips, ports, i, threads, timeout, openonly))).start();
+					}
 				}
 			}
 		}
@@ -88,6 +92,16 @@ public class JavaScan {
 		
     }
 
+	public static void threadSleep(int threads, int timeout) {
+		try {
+			while (Thread.activeCount() >= threads) {
+				Thread.sleep(timeout/10);
+			}
+		} catch (Exception e) {
+			System.out.println("Thread err: "+e.toString());
+		}
+	}
+	
 }
 
 
